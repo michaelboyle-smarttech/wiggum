@@ -2,16 +2,104 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Wiggum">
-    <Color x:Key="ThemeBaseColor">#A06C28</Color>
+    <Color x:Key="ThemeBaseColor">#555559</Color>
     <SolidColorBrush x:Key="ThemeBaseColorBrush" Color="{ThemeResource ThemeBaseColor}" />
-    <Color x:Key="ThemeBaseLighterColor">#FFC06E</Color>
+    <Color x:Key="ThemeBaseLightestColor">#CCCCCD</Color>
+    <SolidColorBrush x:Key="ThemeBaseLightestColorBrush" Color="{ThemeResource ThemeBaseLightestColor}" />
+    <Color x:Key="ThemeBaseLighterColor">#AAAAAC</Color>
     <SolidColorBrush x:Key="ThemeBaseLighterColorBrush" Color="{ThemeResource ThemeBaseLighterColor}" />
-    <Color x:Key="ThemeBaseDarkerColor">#663A00</Color>
+    <Color x:Key="ThemeBaseDarkerColor">#333333</Color>
     <SolidColorBrush x:Key="ThemeBaseDarkerColorBrush" Color="{ThemeResource ThemeBaseDarkerColor}" />
-    <Color x:Key="ThemeAccentColor">#1E4967</Color>
-    <SolidColorBrush x:Key="ThemeAccentColorBrush" Color="{ThemeResource ThemeAccentColor}" />
-    <Color x:Key="ThemeAccentLighterColor">#5288AF</Color>
-    <SolidColorBrush x:Key="ThemeAccentLighterColorBrush" Color="{ThemeResource ThemeAccentLighterColor}" />
-    <Color x:Key="ThemeAccentDarkerColor">#012741</Color>
-    <SolidColorBrush x:Key="ThemeAccentDarkerColorBrush" Color="{ThemeResource ThemeAccentDarkerColor}" />
+    <Color x:Key="ThemeBaseDarkestColor">#111111</Color>
+    <SolidColorBrush x:Key="ThemeBaseDarkestColorBrush" Color="{ThemeResource ThemeBaseDarkestColor}" />
+    <Color x:Key="ThemePrimaryLightestColor">#cedfe8</Color>
+    <SolidColorBrush x:Key="ThemePrimaryLightestColorBrush" Color="{ThemeResource ThemePrimaryLightestColor}" />
+    <Color x:Key="ThemePrimaryLighterColor">#83b0c9</Color>
+    <SolidColorBrush x:Key="ThemePrimaryLighterColorBrush" Color="{ThemeResource ThemePrimaryLighterColor}" />
+    <Color x:Key="ThemePrimaryColor">#4896c1</Color>
+    <SolidColorBrush x:Key="ThemePrimaryColorBrush" Color="{ThemeResource ThemePrimaryColor}" />
+    <Color x:Key="ThemePrimaryDarkerColor">#2a759d</Color>
+    <SolidColorBrush x:Key="ThemePrimaryDarkerColorBrush" Color="{ThemeResource ThemePrimaryDarkerColor}" />
+    <Color x:Key="ThemePrimaryDarkestColor">#1a4e6b</Color>
+    <SolidColorBrush x:Key="ThemePrimaryDarkestColorBrush" Color="{ThemeResource ThemePrimaryDarkestColor}" />
+    <Color x:Key="ThemeSecondaryLightestColor">#e8d1ce</Color>
+    <SolidColorBrush x:Key="ThemeSecondaryLightestColorBrush" Color="{ThemeResource ThemeSecondaryLightestColor}" />
+    <Color x:Key="ThemeSecondaryLighterColor">#c98a83</Color>
+    <SolidColorBrush x:Key="ThemeSecondaryLighterColorBrush" Color="{ThemeResource ThemeSecondaryLighterColor}" />
+    <Color x:Key="ThemeSecondaryColor">#c15549</Color>
+    <SolidColorBrush x:Key="ThemeSecondaryColorBrush" Color="{ThemeResource ThemeSecondaryColor}" />
+    <Color x:Key="ThemeSecondaryDarkerColor">#9d352a</Color>
+    <SolidColorBrush x:Key="ThemeSecondaryDarkerColorBrush" Color="{ThemeResource ThemeSecondaryDarkerColor}" />
+    <Color x:Key="ThemeSecondaryDarkestColor">#6b221a</Color>
+    <SolidColorBrush x:Key="ThemeSecondaryDarkestColorBrush" Color="{ThemeResource ThemeSecondaryDarkestColor}" />
+    <Color x:Key="ThemeTertiaryLightestColor">#cee8d1</Color>
+    <SolidColorBrush x:Key="ThemeTertiaryLightestColorBrush" Color="{ThemeResource ThemeTertiaryLightestColor}" />
+    <Color x:Key="ThemeTertiaryLighterColor">#83c98a</Color>
+    <SolidColorBrush x:Key="ThemeTertiaryLighterColorBrush" Color="{ThemeResource ThemeTertiaryLighterColor}" />
+    <Color x:Key="ThemeTertiaryColor">#49c155</Color>
+    <SolidColorBrush x:Key="ThemeTertiaryColorBrush" Color="{ThemeResource ThemeTertiaryColor}" />
+    <Color x:Key="ThemeTertiaryDarkerColor">#2a9d35</Color>
+    <SolidColorBrush x:Key="ThemeTertiaryDarkerColorBrush" Color="{ThemeResource ThemeTertiaryDarkerColor}" />
+    <Color x:Key="ThemeTertiaryDarkestColor">#1a6b22</Color>
+    <SolidColorBrush x:Key="ThemeTertiaryDarkestColorBrush" Color="{ThemeResource ThemeTertiaryDarkestColor}" />
+    <Color x:Key="ThemeQuartenaryLightestColor">#ffffff</Color>
+    <SolidColorBrush x:Key="ThemeQuartenaryLightestColorBrush" Color="{ThemeResource ThemeQuartenaryLightestColor}" />
+    <Color x:Key="ThemeQuartenaryLighterColor">#ebe2b2</Color>
+    <SolidColorBrush x:Key="ThemeQuartenaryLighterColorBrush" Color="{ThemeResource ThemeQuartenaryLighterColor}" />
+    <Color x:Key="ThemeQuartenaryColor">#e7d365</Color>
+    <SolidColorBrush x:Key="ThemeQuartenaryColorBrush" Color="{ThemeResource ThemeQuartenaryColor}" />
+    <Color x:Key="ThemeQuartenaryDarkerColor">#e5c510</Color>
+    <SolidColorBrush x:Key="ThemeQuartenaryDarkerColorBrush" Color="{ThemeResource ThemeQuartenaryDarkerColor}" />
+    <Color x:Key="ThemeQuartenaryDarkestColor">#9c8607</Color>
+    <SolidColorBrush x:Key="ThemeQuartenaryDarkestColorBrush" Color="{ThemeResource ThemeQuartenaryDarkestColor}" />
+    <Color x:Key="ThemeQuintenaryLightestColor">#e8cedf</Color>
+    <SolidColorBrush x:Key="ThemeQuintenaryLightestColorBrush" Color="{ThemeResource ThemeQuintenaryLightestColor}" />
+    <Color x:Key="ThemeQuintenaryLighterColor">#c983b0</Color>
+    <SolidColorBrush x:Key="ThemeQuintenaryLighterColorBrush" Color="{ThemeResource ThemeQuintenaryLighterColor}" />
+    <Color x:Key="ThemeQuintenaryColor">#c14997</Color>
+    <SolidColorBrush x:Key="ThemeQuintenaryColorBrush" Color="{ThemeResource ThemeQuintenaryColor}" />
+    <Color x:Key="ThemeQuintenaryDarkerColor">#9d2a75</Color>
+    <SolidColorBrush x:Key="ThemeQuintenaryDarkerColorBrush" Color="{ThemeResource ThemeQuintenaryDarkerColor}" />
+    <Color x:Key="ThemeQuintenaryDarkestColor">#6b1a4e</Color>
+    <SolidColorBrush x:Key="ThemeQuintenaryDarkestColorBrush" Color="{ThemeResource ThemeQuintenaryDarkestColor}" />
+    <Color x:Key="ThemeSenaryLightestColor">#d1cee8</Color>
+    <SolidColorBrush x:Key="ThemeSenaryLightestColorBrush" Color="{ThemeResource ThemeSenaryLightestColor}" />
+    <Color x:Key="ThemeSenaryLighterColor">#8a83c9</Color>
+    <SolidColorBrush x:Key="ThemeSenaryLighterColorBrush" Color="{ThemeResource ThemeSenaryLighterColor}" />
+    <Color x:Key="ThemeSenaryColor">#5549c1</Color>
+    <SolidColorBrush x:Key="ThemeSenaryColorBrush" Color="{ThemeResource ThemeSenaryColor}" />
+    <Color x:Key="ThemeSenaryDarkerColor">#352a9d</Color>
+    <SolidColorBrush x:Key="ThemeSenaryDarkerColorBrush" Color="{ThemeResource ThemeSenaryDarkerColor}" />
+    <Color x:Key="ThemeSenaryDarkestColor">#221a6b</Color>
+    <SolidColorBrush x:Key="ThemeSenaryDarkestColorBrush" Color="{ThemeResource ThemeSenaryDarkestColor}" />
+    <Color x:Key="ThemeSeptenaryLightestColor">#cee8de</Color>
+    <SolidColorBrush x:Key="ThemeSeptenaryLightestColorBrush" Color="{ThemeResource ThemeSeptenaryLightestColor}" />
+    <Color x:Key="ThemeSeptenaryLighterColor">#83c9ad</Color>
+    <SolidColorBrush x:Key="ThemeSeptenaryLighterColorBrush" Color="{ThemeResource ThemeSeptenaryLighterColor}" />
+    <Color x:Key="ThemeSeptenaryColor">#49c191</Color>
+    <SolidColorBrush x:Key="ThemeSeptenaryColorBrush" Color="{ThemeResource ThemeSeptenaryColor}" />
+    <Color x:Key="ThemeSeptenaryDarkerColor">#2a9d6f</Color>
+    <SolidColorBrush x:Key="ThemeSeptenaryDarkerColorBrush" Color="{ThemeResource ThemeSeptenaryDarkerColor}" />
+    <Color x:Key="ThemeSeptenaryDarkestColor">#1a6b4a</Color>
+    <SolidColorBrush x:Key="ThemeSeptenaryDarkestColorBrush" Color="{ThemeResource ThemeSeptenaryDarkestColor}" />
+    <Color x:Key="ThemeOctonaryLightestColor">#ffffff</Color>
+    <SolidColorBrush x:Key="ThemeOctonaryLightestColorBrush" Color="{ThemeResource ThemeOctonaryLightestColor}" />
+    <Color x:Key="ThemeOctonaryLighterColor">#ebc6b2</Color>
+    <SolidColorBrush x:Key="ThemeOctonaryLighterColorBrush" Color="{ThemeResource ThemeOctonaryLighterColor}" />
+    <Color x:Key="ThemeOctonaryColor">#e79265</Color>
+    <SolidColorBrush x:Key="ThemeOctonaryColorBrush" Color="{ThemeResource ThemeOctonaryColor}" />
+    <Color x:Key="ThemeOctonaryDarkerColor">#e55a10</Color>
+    <SolidColorBrush x:Key="ThemeOctonaryDarkerColorBrush" Color="{ThemeResource ThemeOctonaryDarkerColor}" />
+    <Color x:Key="ThemeOctonaryDarkestColor">#9c3b07</Color>
+    <SolidColorBrush x:Key="ThemeOctonaryDarkestColorBrush" Color="{ThemeResource ThemeOctonaryDarkestColor}" />
+    <Color x:Key="ThemeNonaryLightestColor">#dfe8ce</Color>
+    <SolidColorBrush x:Key="ThemeNonaryLightestColorBrush" Color="{ThemeResource ThemeNonaryLightestColor}" />
+    <Color x:Key="ThemeNonaryLighterColor">#b0c983</Color>
+    <SolidColorBrush x:Key="ThemeNonaryLighterColorBrush" Color="{ThemeResource ThemeNonaryLighterColor}" />
+    <Color x:Key="ThemeNonaryColor">#97c149</Color>
+    <SolidColorBrush x:Key="ThemeNonaryColorBrush" Color="{ThemeResource ThemeNonaryColor}" />
+    <Color x:Key="ThemeNonaryDarkerColor">#759d2a</Color>
+    <SolidColorBrush x:Key="ThemeNonaryDarkerColorBrush" Color="{ThemeResource ThemeNonaryDarkerColor}" />
+    <Color x:Key="ThemeNonaryDarkestColor">#4e6b1a</Color>
+    <SolidColorBrush x:Key="ThemeNonaryDarkestColorBrush" Color="{ThemeResource ThemeNonaryDarkestColor}" />
 </ResourceDictionary>
