@@ -23,6 +23,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
@@ -51,14 +52,14 @@ namespace Wiggum
         {
             this.InitializeComponent();
             settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            if(settings.Values.ContainsKey(TARGETPROCESSSERVER_SETTINGSKEY)) { targetProcessServer = (string) settings.Values[TARGETPROCESSSERVER_SETTINGSKEY]; } else { targetProcessServer = DEFAULT_TARGETPROCESSSERVER; settings.Values[TARGETPROCESSSERVER_SETTINGSKEY] = targetProcessServer; }
-            if(settings.Values.ContainsKey(SELECTEDPROJECTID_SETTINGSKEY)) { selectedProjectId = (int)settings.Values[SELECTEDPROJECTID_SETTINGSKEY]; } else { selectedProjectId = DEFAULT_SELECTEDPROJECTID; settings.Values[SELECTEDPROJECTID_SETTINGSKEY] = selectedProjectId; }
+            if (settings.Values.ContainsKey(TARGETPROCESSSERVER_SETTINGSKEY)) { targetProcessServer = (string)settings.Values[TARGETPROCESSSERVER_SETTINGSKEY]; } else { targetProcessServer = DEFAULT_TARGETPROCESSSERVER; settings.Values[TARGETPROCESSSERVER_SETTINGSKEY] = targetProcessServer; }
+            if (settings.Values.ContainsKey(SELECTEDPROJECTID_SETTINGSKEY)) { selectedProjectId = (int)settings.Values[SELECTEDPROJECTID_SETTINGSKEY]; } else { selectedProjectId = DEFAULT_SELECTEDPROJECTID; settings.Values[SELECTEDPROJECTID_SETTINGSKEY] = selectedProjectId; }
         }
 
         void resetUserNamePasswordField()
         {
             progressRing.IsActive = false;
-            progressRing.Visibility = Visibility.Collapsed;
+            projectLabel.Visibility = Visibility.Collapsed;
             projectComboBox.Visibility = Visibility.Collapsed;
             userNameField.IsEnabled = true;
             passwordField.IsEnabled = true;
@@ -71,9 +72,8 @@ namespace Wiggum
         {
             userNameField.IsEnabled = false;
             passwordField.IsEnabled = false;
-            progressRing.IsActive = true;
             signInButton.IsEnabled = false;
-            progressRing.Visibility = Visibility.Visible;
+            progressRing.IsActive = true;
             client = new HttpClient(new HttpBaseProtocolFilter { ServerCredential = new PasswordCredential(targetProcessServer, userNameField.Text, passwordField.Password) });
             getContext();
         }
@@ -81,51 +81,96 @@ namespace Wiggum
         static string ToSentenceCase(string s)
         {
             StringBuilder buf = new StringBuilder();
-            for(int i = 0; i < s.Length; ++i)
+            for (int i = 0; i < s.Length; ++i)
             {
-                if(i==0)
+                if (i == 0)
                 {
                     buf.Append(char.ToUpperInvariant(s[i]));
-                } else { buf.Append(s[i]); }
+                }
+                else { buf.Append(s[i]); }
             }
             return buf.ToString();
         }
 
         class ChartDatum
         {
-            public int week;
-            public int network;
-            public int idf;
+            public int week
+            {
+                get; set;
+            }
+            public int count
+            {
+                get; set;
+            }
+            public string title { get; set; }
+            public string details { get; set; }
+            public SolidColorBrush fill { get; set; }
+            public SolidColorBrush stroke { get; set; }
+
+            public int strokeWidth { get; set; }
         }
-        
+
         class Feature
         {
             public int id;
             public string name;
             public List<Task> networks = new List<Task>();
             public List<Task> idfs = new List<Task>();
-            public ChartDatum[] data;
+            public ChartDatum[] networkdata;
+            public ChartDatum[] idfdata;
 
-            public void summarize(int weeks)
+            public void summarize(int weeks, SolidColorBrush fill, SolidColorBrush stroke1, SolidColorBrush stroke2)
             {
-                data = new ChartDatum[weeks];
-                for(int i = 0; i < weeks; ++i)
+                networkdata = new ChartDatum[weeks];
+                idfdata = new ChartDatum[weeks];
+                for (int i = 0; i < weeks; ++i)
                 {
-                    data[i] = new ChartDatum();
-                    data[i].week = i;
+                    ChartDatum d = new ChartDatum();
+                    d.title = name;
+                    d.week = i;
+                    d.fill = fill;
+                    d.stroke = stroke1;
+                    d.strokeWidth = 1;
+                    networkdata[i] = d;
+                    d = new ChartDatum();
+                    d.title = name;
+                    d.week = i;
+                    d.fill = fill;
+                    d.stroke = stroke1;
+                    d.strokeWidth = 1;
+                    idfdata[i] = d;
                 }
-                foreach(Task t in networks)
+                foreach (Task t in networks)
                 {
-                    data[t.week].network += 1;
+                    ChartDatum d = networkdata[t.week];
+                    d.count = d.count + 1;
+                    if (!string.IsNullOrWhiteSpace(d.details)) { d.details = d.details + "\r\n" + t.name; } else { d.details = t.name; }
+                    d.stroke = stroke2;
+                    d.strokeWidth = 2;
                 }
-                foreach(Task t in idfs)
+                foreach (Task t in idfs)
                 {
-                    data[t.week].idf += 1;
+                    ChartDatum d = idfdata[t.week];
+                    d.count = d.count + 1;
+                    if (!string.IsNullOrWhiteSpace(d.details)) { d.details = d.details + "\r\n" + t.name; } else { d.details = t.name; }
+                    d.stroke = stroke2;
+                    d.strokeWidth = 2;
                 }
-                for(int i = 1; i < weeks; ++i)
+                for (int i = 0; i < weeks; ++i)
                 {
-                    data[i].network += data[i - 1].network;
-                    data[i].idf += data[i - 1].idf;
+                    ChartDatum d = networkdata[i];
+                    if (string.IsNullOrWhiteSpace(d.details)) { d.details = "No change this week"; }
+                    d = idfdata[i];
+                    if (string.IsNullOrWhiteSpace(d.details)) { d.details = "No change this week"; }
+                }
+                for (int i = 1; i < weeks; ++i)
+                {
+                    ChartDatum d = networkdata[i];
+                    ChartDatum c = networkdata[i - 1];
+                    d.count = d.count + c.count;
+                    d = idfdata[i];
+                    c = idfdata[i - 1];
+                    d.count = d.count + c.count;
                 }
             }
         }
@@ -133,6 +178,7 @@ namespace Wiggum
         Dictionary<int, Feature> features = new Dictionary<int, Feature>();
         List<Task> networks = new List<Task>();
         List<Task> idfs = new List<Task>();
+        private bool gettingContext;
 
         class Task
         {
@@ -145,10 +191,11 @@ namespace Wiggum
 
         async void getTasks(string uri)
         {
-            if(string.IsNullOrWhiteSpace(uri))
+            if (string.IsNullOrWhiteSpace(uri))
             {
                 uri = string.Format("{0}/api/v1/Tasks?format=xml&include={1}&where={2}", targetProcessServer, Uri.EscapeDataString(INCLUDE), Uri.EscapeDataString(String.Format("Project.ID eq {0}", selectedProjectId)));
             }
+            progressRing.IsActive = true;
             var req = await client.GetAsync(new Uri(uri));
             if (req.IsSuccessStatusCode)
             {
@@ -160,7 +207,7 @@ namespace Wiggum
                 string responseText = await req.Content.ReadAsStringAsync();
                 var doc = XDocument.Parse(responseText);
                 req.Dispose();
-                foreach(XElement Task in doc.Root.Elements("Task"))
+                foreach (XElement Task in doc.Root.Elements("Task"))
                 {
                     XElement Tags = Task.Element("Tags");
                     string tags = Tags != null ? Tags.Value.ToLowerInvariant() : null;
@@ -174,9 +221,13 @@ namespace Wiggum
                         t.name = Task.Attribute("Name").Value;
                         t.enddate = DateTime.Parse(EndDate.Value);
                         t.week = (t.enddate - start).Days / 7;
+                        if (t.week < 0)
+                        {
+                            t.week = 0;
+                        }
                         t.feature = int.Parse(Feature.Attribute("Id").Value);
                         Feature f;
-                        if(features.ContainsKey(t.feature))
+                        if (features.ContainsKey(t.feature))
                         {
                             f = features[t.feature];
                         }
@@ -192,7 +243,7 @@ namespace Wiggum
                             f.networks.Add(t);
                             networks.Add(t);
                         }
-                        if(tags.Contains("idf"))
+                        if (tags.Contains("idf"))
                         {
                             f.idfs.Add(t);
                             idfs.Add(t);
@@ -211,6 +262,7 @@ namespace Wiggum
             }
             else
             {
+                progressRing.IsActive = false;
                 var popup = new MessageDialog("Check username/password and try again.", "Access denied");
                 req.Dispose();
                 await popup.ShowAsync();
@@ -229,13 +281,14 @@ namespace Wiggum
                 var doc = XDocument.Parse(responseText);
                 ComboBoxItem firstComboBoxItem = null;
                 bool selectedProjectFound = false;
+                gettingContext = true;
                 foreach (XElement e in doc.Root.Element("SelectedProjects").Elements("ProjectInfo"))
                 {
                     ComboBoxItem i = new ComboBoxItem();
                     i.Content = e.Attribute("Name").Value;
                     int id = int.Parse(e.Attribute("Id").Value);
                     i.Tag = id;
-                    if(firstComboBoxItem == null)
+                    if (firstComboBoxItem == null)
                     {
                         firstComboBoxItem = i;
                     }
@@ -246,18 +299,19 @@ namespace Wiggum
                     }
                     projectComboBox.Items.Add(i);
                 }
-                if(!selectedProjectFound)
+                if (!selectedProjectFound)
                 {
                     firstComboBoxItem.IsSelected = true;
-                    selectedProjectId = (int) firstComboBoxItem.Tag;
+                    selectedProjectId = (int)firstComboBoxItem.Tag;
                     settings.
                         Values[SELECTEDPROJECTID_SETTINGSKEY] = selectedProjectId;
                 }
+                gettingContext = false;
                 projectLabel.Visibility = Visibility.Visible;
                 projectComboBox.Visibility = Visibility.Visible;
-                resetUserNamePasswordField();
+                getTasks(null);
             }
-            else if(req.StatusCode == HttpStatusCode.Unauthorized || req.StatusCode == HttpStatusCode.Forbidden)
+            else if (req.StatusCode == HttpStatusCode.Unauthorized || req.StatusCode == HttpStatusCode.Forbidden)
             {
                 var popup = new MessageDialog("Check username/password and try again.", "Access denied");
                 req.Dispose();
@@ -297,41 +351,87 @@ namespace Wiggum
 
         private void projectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            selectedProjectId = (int)(e.AddedItems.First() as ComboBoxItem).Tag;
-            settings.Values[SELECTEDPROJECTID_SETTINGSKEY] = selectedProjectId;
-            getTasks(null);
+            if (!gettingContext)
+            {
+                selectedProjectId = (int)(e.AddedItems.First() as ComboBoxItem).Tag;
+                settings.Values[SELECTEDPROJECTID_SETTINGSKEY] = selectedProjectId;
+                getTasks(null);
+            }
         }
 
         void showData()
         {
             int weeks = 0;
-            foreach(Task t in networks)
+            foreach (Task t in networks)
             {
                 weeks = Math.Max(weeks, t.week);
             }
-            foreach(Task t in idfs)
+            foreach (Task t in idfs)
             {
                 weeks = Math.Max(weeks, t.week);
             }
             ++weeks;
             networkChart.Series.Clear();
             idfChart.Series.Clear();
-            foreach(Feature f in features.Values)
+            int i = 0;
+            string[] palette = new string[] { "Primary", "Secondary", "Tertiary", "Quartenary", "Quintenary", "Senary", "Septenary", "Octonary", "Nonary" };
+            foreach (Feature f in features.Values)
             {
-                f.summarize(weeks);
-                LineSeries s = new LineSeries();
-                s.Title = f.name;
-                s.IndependentValuePath = "week";
-                s.DependentValuePath = "network";
-                s.ItemsSource = f.data;
-                networkChart.Series.Add(s);
-                s = new LineSeries();
-                s.Title = f.name;
-                s.IndependentValuePath = "week";
-                s.DependentValuePath = "idf";
-                s.ItemsSource = f.data;
-                idfChart.Series.Add(s);
+                string color = palette[i % palette.Length];
+                SolidColorBrush fill = App.Current.Resources[string.Format("Theme{0}ColorBrush", color)] as SolidColorBrush;
+                SolidColorBrush stroke1 = App.Current.Resources[string.Format("Theme{0}LighterColorBrush", color)] as SolidColorBrush;
+                SolidColorBrush stroke2 = App.Current.Resources[string.Format("Theme{0}DarkestColorBrush", color)] as SolidColorBrush;
+
+                f.summarize(weeks, fill, stroke1, stroke2);
+                if (f.networks.Count > 0)
+                {
+                    LineSeries s = getLineSeries(f, fill);
+                    s.ItemsSource = f.networkdata;
+                    int m = f.networkdata[weeks - 2].count, n = f.networkdata[weeks - 1].count;
+                    if (n > m)
+                    {
+                        s.Title = string.Format("{0} ({1}, \u0394{2})", f.name, n, n - m);
+                    }
+                    else
+                    {
+                        s.Title = string.Format("{0} ({1})", f.name, n);
+                    }
+                    networkChart.Series.Add(s);
+                }
+                if (f.idfs.Count > 0)
+                {
+                    LineSeries s = getLineSeries(f, fill);
+                    s.ItemsSource = f.idfdata;
+                    int m = f.idfdata[weeks - 2].count, n = f.idfdata[weeks - 1].count;
+                    if (n > m)
+                    {
+                        s.Title = string.Format("{0} ({1}, \u0394{2})", f.name, n, n - m);
+                    }
+                    else
+                    {
+                        s.Title = string.Format("{0} ({1})", f.name, n);
+                    }
+                    idfChart.Series.Add(s);
+                }
+                if (f.networks.Count + f.idfs.Count > 0)
+                {
+                    ++i;
+                }
             }
+            scoreboard.Visibility = Visibility.Visible;
+            progressRing.IsActive = false;
+        }
+        private LineSeries getLineSeries(Feature f, SolidColorBrush fill)
+        {
+            LineSeries s = new LineSeries();
+            Style n = new Style(typeof(LineDataPoint));
+            n.BasedOn = App.Current.Resources["ThemeLineSeriesDataPointStyle"] as Style;
+            n.Setters.Add(new Setter(LineDataPoint.BackgroundProperty, fill));
+            s.DataPointStyle = n;
+            s.IndependentValuePath = "week";
+            s.DependentValuePath = "count";
+            return s;
         }
     }
+
 }

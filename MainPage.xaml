@@ -8,7 +8,7 @@
     x:Class="Wiggum.MainPage"
     mc:Ignorable="d">
 
-    <Grid x:Name="signInGrid" Background="{ThemeResource ThemeBaseColorBrush}">
+    <Grid x:Name="signInGrid" Background="{ThemeResource ThemeBaseLightestColorBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -22,16 +22,16 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="signInHeading" Text="Sign in" VerticalAlignment="Top" Style="{ThemeResource ThemeHeadingTextStyle}" />
         <TextBlock Grid.Row="1" Grid.Column="0" x:Name="userNameLabel" Text="User name:" Style="{ThemeResource ThemeLabelTextStyle}"/>
-        <TextBox Grid.Row="1" Grid.Column="1" x:Name="userNameField" Text="" Margin="{ThemeResource ThemeBaseRightMargin}" PlaceholderText="CALGARY\username" KeyUp="userNamePasswordField_KeyUp"/>
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="userNameField" Text="" Margin="{ThemeResource ThemeBaseRightMargin}" Style="{ThemeResource ThemeTextFieldStyle}" PlaceholderText="CALGARY\username" KeyUp="userNamePasswordField_KeyUp"/>
         <TextBlock Grid.Row="2" Grid.Column="0" x:Name="passwordLabel" Text="Password:" Style="{ThemeResource ThemeLabelTextStyle}"/>
         <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="passwordField" Margin="{ThemeResource ThemeBaseRightMargin}" KeyUp="userNamePasswordField_KeyUp"/>
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="{ThemeResource ThemeBaseRightMargin}">
-            <Button x:Name="signInButton" Content="Sign in"  Click="signInButton_Click" />
-            <ProgressRing x:Name="progressRing" IsActive="False" Visibility="Collapsed" Margin="{ThemeResource ThemeBaseCenterMargin}"/>
+            <Button x:Name="signInButton" Content="Sign in"  Click="signInButton_Click" Style="{ThemeResource ThemeButtonStyle}"/>
+            <ProgressRing x:Name="progressRing" IsActive="False" Margin="{ThemeResource ThemeBaseCenterMargin}"/>
             <TextBlock x:Name="projectLabel" Text="Project:" Style="{ThemeResource ThemeLabelTextStyle}" Visibility="Collapsed"/>
-            <ComboBox x:Name="projectComboBox"  Visibility="Collapsed" Width="360" SelectionChanged="projectComboBox_SelectionChanged" />
+            <ComboBox x:Name="projectComboBox"  Visibility="Collapsed" SelectionChanged="projectComboBox_SelectionChanged" Style="{ThemeResource ThemeComboBoxStyle}" />
         </StackPanel>
-        <Grid x:Name="scoreboard" Grid.Column="1"  Grid.Row="4" Margin="{ThemeResource ThemeBaseRightMargin}">
+        <Grid x:Name="scoreboard" Grid.Column="1"  Grid.Row="4" Margin="{ThemeResource ThemeBaseRightMargin}" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
@@ -39,8 +39,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Charting:Chart x:Name="networkChart" Grid.Row="0" Grid.Column="0" MinWidth="100" MinHeight="100"/>
-            <Charting:Chart x:Name="idfChart" Grid.Row="0" Grid.Column="1" MinWidth="100" MinHeight="100" />
+            <Charting:Chart x:Name="networkChart" Grid.Row="0" Grid.Column="0" Title="Network Size" Style="{ThemeResource ThemeChartStyle}" Margin="{ThemeResource ThemeBaseCenterMargin}" />
+            <Charting:Chart x:Name="idfChart" Grid.Row="0" Grid.Column="1" Title="IDFs Submitted" Style="{ThemeResource ThemeChartStyle}" Margin="{ThemeResource ThemeBaseRightMargin}" />
         </Grid>
     </Grid>
 </Page>

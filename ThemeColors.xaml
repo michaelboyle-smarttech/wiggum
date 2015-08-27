@@ -4,7 +4,7 @@
     xmlns:local="using:Wiggum">
     <Color x:Key="ThemeBaseColor">#555559</Color>
     <SolidColorBrush x:Key="ThemeBaseColorBrush" Color="{ThemeResource ThemeBaseColor}" />
-    <Color x:Key="ThemeBaseLightestColor">#CCCCCD</Color>
+    <Color x:Key="ThemeBaseLightestColor">#EEEEEF</Color>
     <SolidColorBrush x:Key="ThemeBaseLightestColorBrush" Color="{ThemeResource ThemeBaseLightestColor}" />
     <Color x:Key="ThemeBaseLighterColor">#AAAAAC</Color>
     <SolidColorBrush x:Key="ThemeBaseLighterColorBrush" Color="{ThemeResource ThemeBaseLighterColor}" />
