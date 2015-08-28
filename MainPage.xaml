@@ -20,7 +20,7 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="signInHeading" Text="Sign in" VerticalAlignment="Top" Style="{ThemeResource ThemeHeadingTextStyle}" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="signInHeading" Text="Reesarch Scoreboard" VerticalAlignment="Top" Style="{ThemeResource ThemeHeadingTextStyle}" />
         <TextBlock Grid.Row="1" Grid.Column="0" x:Name="userNameLabel" Text="User name:" Style="{ThemeResource ThemeLabelTextStyle}"/>
         <TextBox Grid.Row="1" Grid.Column="1" x:Name="userNameField" Text="" Margin="{ThemeResource ThemeBaseRightMargin}" Style="{ThemeResource ThemeTextFieldStyle}" PlaceholderText="CALGARY\username" KeyUp="userNamePasswordField_KeyUp"/>
         <TextBlock Grid.Row="2" Grid.Column="0" x:Name="passwordLabel" Text="Password:" Style="{ThemeResource ThemeLabelTextStyle}"/>

@@ -59,6 +59,10 @@ namespace Wiggum
         void resetUserNamePasswordField()
         {
             progressRing.IsActive = false;
+            userNameLabel.Visibility = Visibility.Visible;
+            userNameField.Visibility = Visibility.Visible;
+            passwordField.Visibility = Visibility.Visible;
+            passwordLabel.Visibility = Visibility.Visible;
             projectLabel.Visibility = Visibility.Collapsed;
             projectComboBox.Visibility = Visibility.Collapsed;
             userNameField.IsEnabled = true;
@@ -70,12 +74,23 @@ namespace Wiggum
 
         private void signInButton_Click(object sender, RoutedEventArgs e)
         {
-            userNameField.IsEnabled = false;
-            passwordField.IsEnabled = false;
-            signInButton.IsEnabled = false;
-            progressRing.IsActive = true;
-            client = new HttpClient(new HttpBaseProtocolFilter { ServerCredential = new PasswordCredential(targetProcessServer, userNameField.Text, passwordField.Password) });
-            getContext();
+            if (features == null || features.Count == 0)
+            {
+                userNameField.IsEnabled = false;
+                passwordField.IsEnabled = false;
+                signInButton.IsEnabled = false;
+                progressRing.IsActive = true;
+                client = new HttpClient(new HttpBaseProtocolFilter { ServerCredential = new PasswordCredential(targetProcessServer, userNameField.Text, passwordField.Password) });
+                getContext();
+            }
+            else
+            {
+                resetUserNamePasswordField();
+                scoreboard.Visibility = Visibility.Collapsed;
+                networkChart.Series.Clear();
+                idfChart.Series.Clear();
+                features.Clear();
+            }
         }
 
         static string ToSentenceCase(string s)
