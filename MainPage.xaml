@@ -29,11 +29,14 @@
             <Button x:Name="signInButton" Content="Sign in" IsEnabled="False" Click="signInButton_Click" Style="{ThemeResource ThemeButtonStyle}"/>
             <ProgressRing x:Name="progressRing" IsActive="False" Margin="{ThemeResource ThemeBaseCenterMargin}"/>
             <TextBlock x:Name="projectLabel" Text="Project:" Style="{ThemeResource ThemeLabelTextStyle}" Visibility="Collapsed"/>
-            <ComboBox x:Name="projectComboBox"  Visibility="Collapsed" SelectionChanged="projectComboBox_SelectionChanged" Style="{ThemeResource ThemeComboBoxStyle}" />
+            <ComboBox x:Name="projectComboBox"  Visibility="Collapsed" SelectionChanged="projectTeamComboBox_SelectionChanged" Style="{ThemeResource ThemeComboBoxStyle}" />
+            <TextBlock x:Name="teamLabel" Text="Team:" Style="{ThemeResource ThemeLabelTextStyle}" Visibility="Collapsed"/>
+            <ComboBox x:Name="teamComboBox"  Visibility="Collapsed" SelectionChanged="projectTeamComboBox_SelectionChanged" Style="{ThemeResource ThemeComboBoxStyle}" />
         </StackPanel>
         <Grid x:Name="scoreboard" Grid.Column="1"  Grid.Row="4" Margin="{ThemeResource ThemeBaseRightMargin}" Visibility="Collapsed">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -41,6 +44,7 @@
             </Grid.ColumnDefinitions>
             <Charting:Chart x:Name="networkChart" Grid.Row="0" Grid.Column="0" Title="Network Size" Style="{ThemeResource ThemeChartStyle}" Margin="{ThemeResource ThemeBaseCenterMargin}" />
             <Charting:Chart x:Name="idfChart" Grid.Row="0" Grid.Column="1" Title="IDFs Submitted" Style="{ThemeResource ThemeChartStyle}" Margin="{ThemeResource ThemeBaseRightMargin}" />
+            <Charting:Chart x:Name="pipelineChart" Grid.Row="1" Grid.Column="0" Title="Pipeline" Style="{ThemeResource ThemeChartStyle}" Margin="{ThemeResource ThemeBaseCenterMargin}" />
         </Grid>
     </Grid>
 </Page>

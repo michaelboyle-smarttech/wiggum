@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="ThemeLayouts.xaml" />
                 <ResourceDictionary Source="ThemeColors.xaml" />
                 <ResourceDictionary Source="ThemeTextStyles.xaml" />
+                <ResourceDictionary Source="ThemeChartStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

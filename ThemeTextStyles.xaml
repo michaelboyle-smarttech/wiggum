@@ -44,50 +44,5 @@
         <Setter Property="FontSize" Value="{ThemeResource ThemeBaseFontSize}" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
-    <Style x:Key="ThemeChartTitleStyle" TargetType="DataVis:Title">
-        <Setter Property="FontFamily" Value="{ThemeResource ThemeFontFamily}" />
-        <Setter Property="Foreground" Value="{ThemeResource ThemeBaseDarkestColorBrush}" />
-        <Setter Property="FontWeight" Value="Normal" />
-        <Setter Property="FontSize" Value="{ThemeResource ThemeLargeFontSize}" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-    </Style>
-    <Style x:Key="ThemeChartStyle" TargetType="Charting:Chart">
-        <Setter Property="FontFamily" Value="{ThemeResource ThemeFontFamily}" />
-        <Setter Property="Foreground" Value="{ThemeResource ThemeBaseDarkerColorBrush}" />
-        <Setter Property="FontWeight" Value="Light" />
-        <Setter Property="FontSize" Value="{ThemeResource ThemeSmallFontSize}" />
-        <Setter Property="TitleStyle" Value="{ThemeResource ThemeChartTitleStyle}" />
-        <Setter Property="MinWidth" Value="300" />
-        <Setter Property="MinHeight" Value="300"  />
-        <Setter Property="Background" Value="{ThemeResource ThemeBaseLighterColorBrush}" />
-        <Setter Property="BorderBrush" Value="{ThemeResource ThemeBaseColorBrush}" />
-    </Style>
-    <Style x:Key="ThemeLineSeriesDataPointStyle" TargetType="Charting:LineDataPoint">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Charting:LineDataPoint">
-                    <Grid>
-                        <ToolTipService.ToolTip>
-                            <ContentControl>
-                                <TextBlock>
-                                    <Run Text="{Binding title}"
-        FontFamily="{ThemeResource ThemeFontFamily}"
-                                         Foreground="{ThemeResource ThemeBaseDarkestColorBrush}"
-                                         FontSize="{ThemeResource ThemeBaseFontSize}"
-                                         FontWeight="Normal"/>
-                                    <LineBreak />
-                                    <Run Text="{Binding details}" 
-        FontFamily="{ThemeResource ThemeFontFamily}"
-                                         Foreground="{ThemeResource ThemeBaseDarkerColorBrush}"
-                                         FontSize="{ThemeResource ThemeSmallFontSize}"
-                                         FontWeight="Light" />
-                                </TextBlock>
-                            </ContentControl>
-                        </ToolTipService.ToolTip>
-                        <Ellipse Fill="{Binding fill}" Stroke="{Binding stroke}" StrokeThickness="{Binding strokeWidth}" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+
 </ResourceDictionary>
