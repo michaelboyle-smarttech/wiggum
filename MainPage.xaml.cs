@@ -68,6 +68,7 @@ namespace Wiggum
             userNameField.IsEnabled = true;
             passwordField.IsEnabled = true;
             signInButton.IsEnabled = false;
+            passwordField.Password = "";
             userNameField.SelectAll();
             userNameField.Focus(FocusState.Keyboard);
         }
@@ -85,6 +86,7 @@ namespace Wiggum
             }
             else
             {
+                signInButton.Content = "Sign in";
                 resetUserNamePasswordField();
                 scoreboard.Visibility = Visibility.Collapsed;
                 networkChart.Series.Clear();
@@ -346,6 +348,7 @@ namespace Wiggum
 
         private void userNamePasswordField_KeyUp(object sender, KeyRoutedEventArgs e)
         {
+            signInButton.IsEnabled = !string.IsNullOrWhiteSpace(userNameField.Text);
             if (e.Key == VirtualKey.Enter)
             {
                 if (string.IsNullOrWhiteSpace(userNameField.Text))
@@ -435,6 +438,8 @@ namespace Wiggum
             }
             scoreboard.Visibility = Visibility.Visible;
             progressRing.IsActive = false;
+            signInButton.Content = "Sign out";
+            signInButton.IsEnabled = true;
         }
         private LineSeries getLineSeries(Feature f, SolidColorBrush fill)
         {

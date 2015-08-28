@@ -20,13 +20,13 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="signInHeading" Text="Reesarch Scoreboard" VerticalAlignment="Top" Style="{ThemeResource ThemeHeadingTextStyle}" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="signInHeading" Text="Research Scoreboard" VerticalAlignment="Top" Style="{ThemeResource ThemeHeadingTextStyle}" />
         <TextBlock Grid.Row="1" Grid.Column="0" x:Name="userNameLabel" Text="User name:" Style="{ThemeResource ThemeLabelTextStyle}"/>
         <TextBox Grid.Row="1" Grid.Column="1" x:Name="userNameField" Text="" Margin="{ThemeResource ThemeBaseRightMargin}" Style="{ThemeResource ThemeTextFieldStyle}" PlaceholderText="CALGARY\username" KeyUp="userNamePasswordField_KeyUp"/>
         <TextBlock Grid.Row="2" Grid.Column="0" x:Name="passwordLabel" Text="Password:" Style="{ThemeResource ThemeLabelTextStyle}"/>
-        <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="passwordField" Margin="{ThemeResource ThemeBaseRightMargin}" KeyUp="userNamePasswordField_KeyUp"/>
+        <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="passwordField" Margin="{ThemeResource ThemeBaseRightMargin}" KeyUp="userNamePasswordField_KeyUp" />
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="{ThemeResource ThemeBaseRightMargin}">
-            <Button x:Name="signInButton" Content="Sign in"  Click="signInButton_Click" Style="{ThemeResource ThemeButtonStyle}"/>
+            <Button x:Name="signInButton" Content="Sign in" IsEnabled="False" Click="signInButton_Click" Style="{ThemeResource ThemeButtonStyle}"/>
             <ProgressRing x:Name="progressRing" IsActive="False" Margin="{ThemeResource ThemeBaseCenterMargin}"/>
             <TextBlock x:Name="projectLabel" Text="Project:" Style="{ThemeResource ThemeLabelTextStyle}" Visibility="Collapsed"/>
             <ComboBox x:Name="projectComboBox"  Visibility="Collapsed" SelectionChanged="projectComboBox_SelectionChanged" Style="{ThemeResource ThemeComboBoxStyle}" />
