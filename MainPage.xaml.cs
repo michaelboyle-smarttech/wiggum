@@ -45,8 +45,8 @@ namespace Wiggum
         static readonly int DEFAULT_SELECTED_TEAMID = 312747;
         static readonly string TASK_INCLUDE = "[Id,Name,Tags,EntityState,StartDate,EndDate,UserStory[Name,Feature]]";
         static readonly string TASK_WHERE = "EntityState.IsFinal eq \'True\'";
-        static readonly string USERSTORY_INCLUDE = "[Id,Name,CreateDate,StartDate,EndDate,CustomFields,Feature]";
-        static readonly string USERSTORY_WHERE = "CustomFields.WIG eq \'True\' or Feature.CustomFields.WIG eq \'True\'";
+        static readonly string USERSTORY_INCLUDE = "[Id,Name,CreateDate,StartDate,EndDate,CustomFields,Feature[Id,Name,CustomFields]]";
+        static readonly string USERSTORY_WHERE = "CustomFields.WIG eq \'True\' or (Feature is not null and Feature.CustomFields.WIG eq \'True\'";
         HttpClient client;
         string targetProcessServer;
         int selectedProjectId;
@@ -139,6 +139,7 @@ namespace Wiggum
             public SolidColorBrush stroke { get; set; }
 
             public int strokeWidth { get; set; }
+
         }
 
         class Feature
@@ -208,6 +209,21 @@ namespace Wiggum
                     c = idfdata[i - 1];
                     d.count = d.count + c.count;
                 }
+            }
+
+            public override string ToString()
+            {
+                return string.Format("FEATURE #{0} {1}", id, name);
+            }
+
+            public override int GetHashCode()
+            {
+                return id;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj != null && obj is Feature && id == (obj as Feature).id;
             }
         }
 
@@ -332,13 +348,31 @@ namespace Wiggum
         {
             public int id { get; set; }
             public string name { get; set; }
-            public int feature { get; set; }
+            public int featureId { get; set; }
+            public string featureName { get; set; }
+            public string title { get; set; }
             public int opened { get; set; }
             public DateTime createdate { get; set; }
             public int started { get; set; }
             public DateTime? startdate { get; set; }
             public int closed { get; set; }
             public DateTime? enddate { get; set; }
+
+            public override string ToString()
+            {
+                return string.Format("USER STORY #{0} {1}", id, name);
+            }
+
+            public override int GetHashCode()
+            {
+                return id;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj != null && obj is UserStory && id == (obj as UserStory).id;
+            }
+
         }
 
         List<UserStory> userStories = new List<UserStory>();
@@ -355,47 +389,55 @@ namespace Wiggum
                 string responseText = await req.Content.ReadAsStringAsync();
                 var doc = XDocument.Parse(responseText);
                 req.Dispose();
-                try
+                foreach (XElement UserStory in doc.Root.Elements("UserStory"))
                 {
-                    foreach (XElement UserStory in doc.Root.Elements("UserStory"))
+                    XElement CreateDate = UserStory.Element("CreateDate");
+                    XElement StartDate = UserStory.Element("StartDate");
+                    XElement EndDate = UserStory.Element("EndDate");
+                    XElement Feature = UserStory.Element("Feature");
+                    UserStory u = new UserStory();
+                    u.id = int.Parse(UserStory.Attribute("Id").Value);
+                    u.name = UserStory.Attribute("Name").Value;
+                    XAttribute FeatureId = Feature != null ? Feature.Attribute("Id") : null;
+                    u.featureId = FeatureId != null ? int.Parse(Feature.Attribute("Id").Value) : 0;
+                    if (features.ContainsKey(u.featureId))
                     {
-                        XElement CreateDate = UserStory.Element("CreateDate");
-                        XElement StartDate = UserStory.Element("StartDate");
-                        XElement EndDate = UserStory.Element("EndDate");
-                        XElement Feature = UserStory.Element("Feature");
-                        UserStory u = new UserStory();
-                        u.id = int.Parse(UserStory.Attribute("Id").Value);
-                        u.name = UserStory.Attribute("Name").Value;
-                        XAttribute FeatureId = Feature != null ? Feature.Attribute("Id") : null;
-                        u.feature = FeatureId != null ? int.Parse(Feature.Attribute("Id").Value) : 0;
-                        u.createdate = DateTime.Parse(CreateDate.Value);
-                        u.opened = Math.Max(0, (int)((u.createdate - start).Days / 7));
-                        if (StartDate != null && !string.IsNullOrWhiteSpace(StartDate.Value))
+                        u.featureName = features[u.featureId].name;
+                    }
+                    if (!string.IsNullOrWhiteSpace(u.featureName))
+                    {
+                        u.title = string.Format("{0} in {1}", u.name, u.featureName);
+                    }
+                    else
+                    {
+                        u.title = u.name;
+                    }
+                    u.createdate = DateTime.Parse(CreateDate.Value);
+                    u.opened = Math.Max(0, (int)((u.createdate - start).Days / 7));
+                    if (StartDate != null && !string.IsNullOrWhiteSpace(StartDate.Value))
+                    {
+                        u.startdate = DateTime.Parse(StartDate.Value);
+                        u.started = Math.Max(u.opened, (int)((u.startdate.Value - start).Days / 7));
+                        if (EndDate != null && !string.IsNullOrWhiteSpace(EndDate.Value))
                         {
-                            u.startdate = DateTime.Parse(StartDate.Value);
-                            u.started = Math.Max(u.opened, (int)((u.startdate.Value - start).Days / 7));
-                            if (EndDate != null && !string.IsNullOrWhiteSpace(EndDate.Value))
-                            {
-                                u.enddate = DateTime.Parse(EndDate.Value);
-                                u.closed = Math.Max(u.started, (int)((u.enddate.Value - start).Days / 7));
-                            }
-                            else
-                            {
-                                u.enddate = null;
-                                u.closed = -1;
-                            }
+                            u.enddate = DateTime.Parse(EndDate.Value);
+                            u.closed = Math.Max(u.started, (int)((u.enddate.Value - start).Days / 7));
                         }
                         else
                         {
-                            u.startdate = null;
-                            u.started = -1;
                             u.enddate = null;
                             u.closed = -1;
                         }
-                        userStories.Add(u);
                     }
+                    else
+                    {
+                        u.startdate = null;
+                        u.started = -1;
+                        u.enddate = null;
+                        u.closed = -1;
+                    }
+                    userStories.Add(u);
                 }
-                catch (Exception x) { Debug.WriteLine(x); }
                 XAttribute Next = doc.Root.Attribute("Next");
                 if (Next != null && !string.IsNullOrWhiteSpace(Next.Value))
                 {
@@ -477,8 +519,7 @@ namespace Wiggum
                 {
                     firstComboBoxItem.IsSelected = true;
                     selectedTeamId = (int)firstComboBoxItem.Tag;
-                    settings.
-                        Values[SELECTEDTEAMID_SETTINGSKEY] = selectedTeamId;
+                    settings.Values[SELECTEDTEAMID_SETTINGSKEY] = selectedTeamId;
                 }
                 gettingContext = false;
                 projectLabel.Visibility = Visibility.Visible;
@@ -554,30 +595,16 @@ namespace Wiggum
                 SolidColorBrush fill = App.Current.Resources[string.Format("Theme{0}ColorBrush", color)] as SolidColorBrush;
                 SolidColorBrush stroke1 = App.Current.Resources[string.Format("Theme{0}LighterColorBrush", color)] as SolidColorBrush;
                 SolidColorBrush stroke2 = App.Current.Resources[string.Format("Theme{0}DarkestColorBrush", color)] as SolidColorBrush;
-
                 f.summarize(start, weeks, fill, stroke1, stroke2);
                 if (f.networks.Count > 0)
                 {
-                    int m = f.networkdata[weeks - 2].count, n = f.networkdata[weeks - 1].count;
-                    string t =
-                    (n > m)
-                    ?
-                        string.Format("{0} ({1}, \u0394{2})", f.name, n, n - m);
-:                         string.Format("{0} ({1})", f.name, n);
-                    LineSeries s = getLineSeries(t, fill);
+                    LineSeries s = getLineSeries(formatLegend(f.name, f.networkdata[weeks - 1].count, f.networkdata[weeks - 2].count), fill);
                     s.ItemsSource = f.networkdata;
                     networkChart.Series.Add(s);
                 }
                 if (f.idfs.Count > 0)
                 {
-                    int m = f.idfdata[weeks - 2].count, n = f.idfdata[weeks - 1].count;
-                    string t = (n > m)
-                    ?
-
-                    string.Format("{0} ({1}, \u0394{2})", f.name, n, n - m);
-                    : string.Format("{0} ({1})", f.name, n);
-
-                    LineSeries s = getLineSeries(t, fill);
+                    LineSeries s = getLineSeries(formatLegend(f.name, f.networkdata[weeks - 1].count, f.networkdata[weeks - 2].count), fill);
                     s.ItemsSource = f.idfdata;
                     idfChart.Series.Add(s);
                 }
@@ -613,7 +640,7 @@ namespace Wiggum
                 fill = App.Current.Resources[string.Format("Theme{0}ColorBrush", color)] as SolidColorBrush;
                 stroke1 = App.Current.Resources[string.Format("Theme{0}LighterColorBrush", color)] as SolidColorBrush;
                 d = new ChartDatum();
-                d.title = "Started";
+                d.title = "In Progress";
                 d.subtitle = st;
                 d.week = i;
                 d.fill = fill;
@@ -640,21 +667,25 @@ namespace Wiggum
                 d.stroke = stroke2;
                 d.strokeWidth = 2;
                 d.count = d.count + 1;
-                if (!string.IsNullOrWhiteSpace(d.details)) { d.details = d.details + "\r\n" + u.name; } else { d.details = u.name; }
+                if (!string.IsNullOrWhiteSpace(d.details)) { d.details = d.details + "\r\n" + u.title; } else { d.details = u.title; }
                 if (u.started >= u.opened)
                 {
                     d = started[u.started];
                     color = "Secondary";
                     stroke2 = App.Current.Resources[string.Format("Theme{0}DarkestColorBrush", color)] as SolidColorBrush;
+                    d.stroke = stroke2;
+                    d.strokeWidth = 2;
                     d.count = d.count + 1;
-                    if (!string.IsNullOrWhiteSpace(d.details)) { d.details = d.details + "\r\n" + u.name; } else { d.details = u.name; }
+                    if (!string.IsNullOrWhiteSpace(d.details)) { d.details = d.details + "\r\n" + u.title; } else { d.details = u.title; }
                     if (u.closed >= u.started)
                     {
                         d = closed[u.closed];
                         color = "Tertiary";
                         stroke2 = App.Current.Resources[string.Format("Theme{0}DarkestColorBrush", color)] as SolidColorBrush;
+                        d.stroke = stroke2;
+                        d.strokeWidth = 2;
                         d.count = d.count + 1;
-                        if (!string.IsNullOrWhiteSpace(d.details)) { d.details = d.details + "\r\n" + u.name; } else { d.details = u.name; }
+                        if (!string.IsNullOrWhiteSpace(d.details)) { d.details = d.details + "\r\n" + u.title; } else { d.details = u.title; }
                     }
                 }
             }
@@ -671,14 +702,14 @@ namespace Wiggum
             {
                 ChartDatum d = opened[i];
                 ChartDatum c = opened[i - 1];
-                ChartDatum b = started[i - 1];
+                ChartDatum b = started[i];
                 d.count = d.count + c.count - b.count;
             }
             for (int i = 1; i < weeks; ++i)
             {
                 ChartDatum d = started[i];
                 ChartDatum c = started[i - 1];
-                ChartDatum b = closed[i - 1];
+                ChartDatum b = closed[i];
                 d.count = d.count + c.count - b.count;
             }
             for (int i = 1; i < weeks; ++i)
@@ -687,17 +718,32 @@ namespace Wiggum
                 ChartDatum c = closed[i - 1];
                 d.count = d.count + c.count;
             }
-            LineSeries s = getLineSeries("Opened", App.Current.Resources[string.Format("Theme{0}ColorBrush", "Primary")] as SolidColorBrush);
+            LineSeries s = getLineSeries(formatLegend("Opened", opened[weeks - 1].count, opened[weeks - 2].count),  App.Current.Resources[string.Format("Theme{0}ColorBrush", "Primary")] as SolidColorBrush);
             s.ItemsSource = opened;
             pipelineChart.Series.Add(s);
-            s = getLineSeries("Started", App.Current.Resources[string.Format("Theme{0}ColorBrush", "Secondary")] as SolidColorBrush);
+            s = getLineSeries(formatLegend("In Progress", started[weeks - 1].count, started[weeks - 2].count), App.Current.Resources[string.Format("Theme{0}ColorBrush", "Secondary")] as SolidColorBrush);
             s.ItemsSource = started;
             pipelineChart.Series.Add(s);
-            s = getLineSeries("Closed", App.Current.Resources[string.Format("Theme{0}ColorBrush", "Tertiary")] as SolidColorBrush);
+            s = getLineSeries(formatLegend("Closed", closed[weeks - 1].count, closed[weeks - 2].count), App.Current.Resources[string.Format("Theme{0}ColorBrush", "Tertiary")] as SolidColorBrush);
             s.ItemsSource = closed;
             pipelineChart.Series.Add(s);
         }
 
+        static string formatLegend(string title, int thisWeek, int lastWeek)
+        {
+            if(thisWeek > lastWeek)
+            {
+                return string.Format("{0} ({1}, \u2191{2})", title, thisWeek, thisWeek - lastWeek);
+            }
+            else if (thisWeek < lastWeek)
+            {
+                return string.Format("{0} ({1}, \u2193{2})", title, thisWeek, lastWeek - thisWeek);
+            }
+            else
+            {
+                return string.Format("{0} ({1})", title, thisWeek);
+            }
+        }
         void showData()
         {
             int weeks = 0;
@@ -722,6 +768,10 @@ namespace Wiggum
             buildTaskCharts(weeks);
             buildUserStoryCharts(weeks);
             scoreboard.Visibility = Visibility.Visible;
+            userNameLabel.Visibility = Visibility.Collapsed;
+            userNameField.Visibility = Visibility.Collapsed;
+            passwordField.Visibility = Visibility.Collapsed;
+            passwordLabel.Visibility = Visibility.Collapsed;
             progressRing.IsActive = false;
             signInButton.Content = "Sign out";
             signInButton.IsEnabled = true;

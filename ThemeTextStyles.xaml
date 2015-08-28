@@ -5,7 +5,7 @@
     xmlns:Charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting"
     xmlns:DataVis="using:WinRTXamlToolkit.Controls.DataVisualization"
     xmlns:local="using:Wiggum">
-    <FontFamily x:Key="ThemeFontFamily">/Assets/Fonts/MerriweatherSans-Regular.ttf#Merriweather Sans</FontFamily>
+    <FontFamily x:Key="ThemeFontFamily">/Assets/Fonts/MerriweatherSans-Regular.ttf#Merriweather Sans, Segoe UI</FontFamily>
     <Style TargetType="TextBlock" x:Key="ThemeHeadingTextStyle">
         <Setter Property="FontFamily" Value="{ThemeResource ThemeFontFamily}" />
         <Setter Property="Foreground" Value="{ThemeResource ThemeBaseDarkestColorBrush}" />
