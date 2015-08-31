@@ -589,7 +589,9 @@ namespace Wiggum
         {
             int palindx = 0;
             string[] palette = new string[] { "Primary", "Secondary", "Tertiary", "Quartenary", "Quintenary", "Senary", "Septenary", "Octonary", "Nonary" };
-            foreach (Feature f in features.Values)
+            List<Feature> sorted = new List<Feature>(features.Values);
+            sorted.Sort((x, y) => y.networks.Count - x.networks.Count);
+            foreach (Feature f in sorted)
             {
                 string color = palette[palindx % palette.Length];
                 SolidColorBrush fill = App.Current.Resources[string.Format("Theme{0}ColorBrush", color)] as SolidColorBrush;
